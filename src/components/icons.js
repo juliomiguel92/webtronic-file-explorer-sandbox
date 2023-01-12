@@ -13,3 +13,19 @@ export const FolderIcon = () => {
     </span>
   );
 };
+
+export const RenameIcon = () => {
+  return (
+    <span role="img" aria-label="Rename icon">
+      🔤
+    </span>
+  );
+};
+
+export const RemoveIcon = () => {
+  return (
+    <span role="img" aria-label="Remove icon">
+      ❌
+    </span>
+  );
+};

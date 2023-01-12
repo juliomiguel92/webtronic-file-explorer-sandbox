@@ -1,12 +1,14 @@
 import { useState } from "react";
-import { FileIcon, FolderIcon } from "./icons";
+import { FileIcon, FolderIcon, RemoveIcon, RenameIcon } from "./icons";
 
-function Folder({ handleInsertNode = () => {}, explorer }) {
+function Folder({ handleInsertNode = () => { }, handleRenameNode = () => { }, handleDeleteNode = () => { }, explorer }) {
   const [expand, setExpand] = useState(false);
   const [showInput, setShowInput] = useState({
     visible: false,
     isFolder: false
   });
+
+  const [renameInput, setRenameInput] = useState(false);
 
   const handleNewFolder = (e, isFolder) => {
     e.stopPropagation();
@@ -17,10 +19,28 @@ function Folder({ handleInsertNode = () => {}, explorer }) {
     });
   };
 
+  const handleRename = (e) => {
+    e.stopPropagation();
+    setExpand(true);
+    setRenameInput(true);
+  };
+
+  const handleDelete = (e) => {
+    e.stopPropagation();
+    handleDeleteNode(explorer.id);
+  };
+
   const onAddFolder = (e) => {
     if (e.keyCode === 13 && e.target.value) {
       handleInsertNode(explorer.id, e.target.value, showInput.isFolder);
       setShowInput({ ...showInput, visible: false });
+    }
+  };
+
+  const onRename = (e) => {
+    if (e.keyCode === 13 && e.target.value) {
+      handleRenameNode(explorer.id, e.target.value);
+      setRenameInput(false);
     }
   };
 
@@ -30,7 +50,17 @@ function Folder({ handleInsertNode = () => {}, explorer }) {
         <div style={{ marginTop: 5 }}>
           <div onClick={() => setExpand(!expand)} className="folder">
             <span>
-              <FolderIcon /> {explorer.name}
+              <FolderIcon /> {
+                !renameInput
+                  ? explorer.name
+                  : <input
+                    type="text"
+                    autoFocus
+                    defaultValue={explorer.name}
+                    onKeyDown={onRename}
+                    onBlur={() => setRenameInput(false)}
+                  />
+              }
             </span>
 
             <div>
@@ -45,6 +75,18 @@ function Folder({ handleInsertNode = () => {}, explorer }) {
                 onClick={(e) => handleNewFolder(e, false)}
               >
                 <FileIcon /> +
+              </button>
+              <button
+                className="bordered"
+                onClick={(e) => handleRename(e)}
+              >
+                <RenameIcon />
+              </button>
+              <button
+                className="bordered"
+                onClick={(e) => handleDelete(e)}
+              >
+                <RemoveIcon />
               </button>
             </div>
           </div>
@@ -69,6 +111,8 @@ function Folder({ handleInsertNode = () => {}, explorer }) {
               return (
                 <Folder
                   handleInsertNode={handleInsertNode}
+                  handleRenameNode={handleRenameNode}
+                  handleDeleteNode={handleDeleteNode}
                   key={exp.id}
                   explorer={exp}
                 />
@@ -77,9 +121,36 @@ function Folder({ handleInsertNode = () => {}, explorer }) {
           </div>
         </div>
       ) : (
-        <span className="file">
-          <FileIcon /> <span>{explorer.name}</span>
-        </span>
+        <div className="fileContainer">
+          <span className="file">
+            <FileIcon />
+            {
+              !renameInput
+                ? <span>{explorer.name}</span>
+                : <input
+                  type="text"
+                  autoFocus
+                  defaultValue={explorer.name}
+                  onKeyDown={onRename}
+                  onBlur={() => setRenameInput(false)}
+                />
+            }
+          </span>
+          <span>
+            <button
+              className="bordered"
+              onClick={(e) => handleRename(e)}
+            >
+              <RenameIcon />
+            </button>
+            <button
+              className="bordered"
+              onClick={(e) => handleDelete(e)}
+            >
+              <RemoveIcon />
+            </button>
+          </span>
+        </div>
       )}
     </>
   );
