@@ -1,29 +1,24 @@
-import { useState } from "react";
+import { useSelector } from 'react-redux';
+import { selectExplorer } from './redux/slices/fileSlice';
 import Folder from "./components/Folder";
 import useFile from "./hooks/useFile";
 import "./styles.css";
-import explorer from "./data/folderData";
 
 export default function App() {
-  const [explorerData, setExplorerData] = useState(explorer);
+  const explorerData = useSelector(selectExplorer);
 
   const { insertNode, renameNode, deleteNode } = useFile();
 
   const handleInsertNode = (folderId, item, isFolder) => {
-    const finalTree = insertNode(explorerData, folderId, item, isFolder);
-    setExplorerData(finalTree);
+    insertNode(folderId, item, isFolder);
   };
 
   const handleRenameNode = (nodeId, item) => {
-    const finalTree = renameNode(explorerData, nodeId, item);
-    setExplorerData(finalTree);
+    renameNode(nodeId, item);
   };
 
   const handleDeleteNode = (nodeId) => {
-    const finalTree = deleteNode(explorerData, nodeId);
-    setExplorerData((prevState) => {
-      return { ...prevState, ...finalTree };
-    });
+    deleteNode(nodeId);
   };
 
   return (
