@@ -1,7 +1,11 @@
 import { useState } from "react";
 import { FileIcon, FolderIcon, RemoveIcon, RenameIcon } from "./icons";
 
-function Folder({ handleInsertNode = () => { }, handleRenameNode = () => { }, handleDeleteNode = () => { }, explorer }) {
+function Folder({
+  handleInsertNode = () => { },
+  handleRenameNode = () => { },
+  handleDeleteNode = () => { },
+  explorer }) {
   const [expand, setExpand] = useState(false);
   const [showInput, setShowInput] = useState({
     visible: false,
@@ -82,12 +86,16 @@ function Folder({ handleInsertNode = () => { }, handleRenameNode = () => { }, ha
               >
                 <RenameIcon />
               </button>
-              <button
-                className="bordered"
-                onClick={(e) => handleDelete(e)}
-              >
-                <RemoveIcon />
-              </button>
+              {
+                explorer.id != 1
+                  ? <button
+                    className="bordered"
+                    onClick={(e) => handleDelete(e)}
+                  >
+                    <RemoveIcon />
+                  </button>
+                  : null
+              }
             </div>
           </div>
 
